@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import time
 import warnings
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.neighbors import KNeighborsClassifier
@@ -11,7 +13,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.metrics import f1_score, accuracy_score
+from sklearn.metrics import f1_score, accuracy_score, confusion_matrix
 from sklearn.exceptions import ConvergenceWarning
 
 
@@ -56,6 +58,19 @@ def test(model_name, train_features, train_labels, test_features):
     predicted_labels = model.predict(np.array(test_features))
     return predicted_labels
 
+def plot_confusion_matrix(y_true, y_pred, model_used):
+    cm = confusion_matrix(y_true, y_pred)
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(cm, annot=True, fmt='g', cmap='Blues', cbar=False, 
+                xticklabels=['Benign', 'Malware'], yticklabels=['Benign', 'Malware'])
+    
+    plt.title('Confusion Matrix using ' + model_used)
+    plt.xlabel('Predicted Labels')
+    plt.ylabel('True Labels')
+    
+    plt.show()
+    
+
 if __name__=="__main__":
     warnings.filterwarnings("ignore", category=ConvergenceWarning) # avoiding visual pollution
     path_file = 'Android_Malware_Benign.csv'
@@ -69,35 +84,42 @@ if __name__=="__main__":
     predict = test("knn", X_train_val, y_train_val, X_test)
     print("f1 score:", f1_score(y_test, predict))
     print("accuracy:", accuracy_score(y_test, predict))
+    plot_confusion_matrix(y_test, predict, "KNN")
 
     print("\nNaive Bayes:")  
     predict = test("nb", X_train_val, y_train_val, X_test)
     print("f1 score:", f1_score(y_test, predict))
     print("accuracy:", accuracy_score(y_test, predict))
+    plot_confusion_matrix(y_test, predict, "Naive Bayes")
     
     print("\nLogistic Regression:")
     predict = test("lr", X_train_val, y_train_val, X_test)
     print("f1 score:", f1_score(y_test, predict))
     print("accuracy:", accuracy_score(y_test, predict))
+    plot_confusion_matrix(y_test, predict, "Logistic Regression")
     
     print("\nDecision Tree:")
     predict = test("dt", X_train_val, y_train_val, X_test)
     print("f1 score:", f1_score(y_test, predict))
     print("accuracy:", accuracy_score(y_test, predict))
+    plot_confusion_matrix(y_test, predict, "Decision Tree")
     
     print("\nRandom Forest:")
     predict = test("rf", X_train_val, y_train_val, X_test)
     print("f1 score:", f1_score(y_test, predict))
     print("accuracy:", accuracy_score(y_test, predict))
+    plot_confusion_matrix(y_test, predict, "Random Forest")
     
     print("\nSVM:")
     predict = test("svm", X_train_val, y_train_val, X_test)
     print("f1 score:", f1_score(y_test, predict))
     print("accuracy:", accuracy_score(y_test, predict))
+    plot_confusion_matrix(y_test, predict, "SVM")
 
     print("\nGradient Boosting:")
     predict = test("gb", X_train_val, y_train_val, X_test)
     print("f1 score:", f1_score(y_test, predict))
     print("accuracy:", accuracy_score(y_test, predict))
+    plot_confusion_matrix(y_test, predict, "Gradient Boosting")
     
     
