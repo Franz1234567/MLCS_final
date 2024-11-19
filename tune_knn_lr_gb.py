@@ -63,13 +63,13 @@ def tune_gradient_des(n_estimator, learn_rate, max_depth):
 	for est in n_estimator:
 		for rate in learn_rate:
 			for depth in max_depth:
-				print("est:", est, " rate:", rate, "depth: ", depth)
+				print("n_estimator:", est, " learning_rate:", rate, "max_depth: ", depth)
 				model = GradientBoostingClassifier(n_estimators=est, learning_rate=rate, max_depth=depth, random_state=42)
 				cv_scores = cross_val_score(model, X_train_val, y_train_val, cv=10, scoring='f1_macro')
 				f1 = np.mean(cv_scores)
 				cv_scores = cross_val_score(model, np.array(X_train_val), np.array(y_train_val), cv=10, scoring="accuracy")
 				acc = np.mean(cv_scores)
-				list_result.append({ "est" : est, "rate": rate, "depth": depth, "f1": f1, "acc": acc})
+				list_result.append({ "n_estimator" : est, "learning_rate": rate, "max_depth": depth, "f1": f1, "acc": acc})
 	df_result = pd.DataFrame(list_result)
 	return (df_result)
 # 200 - 0.1 - 3 -> f1_score: 0.9611 and acc: 0.9619
@@ -138,4 +138,4 @@ if __name__=="__main__":
 	# print(df.sort_values(by="acc", ascending=False).head(10))
 
 	####################### uncomment to test the parameters found on the train_val set
-	predict_train()
+	# predict_train()
