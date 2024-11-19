@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import time
+import warnings
 
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.neighbors import KNeighborsClassifier
@@ -11,6 +12,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.metrics import f1_score, accuracy_score
+from sklearn.exceptions import ConvergenceWarning
+
 
 def preprocess(dataset):
     dataset_prepprocess = dataset.copy()
@@ -54,6 +57,7 @@ def test(model_name, train_features, train_labels, test_features):
     return predicted_labels
 
 if __name__=="__main__":
+    warnings.filterwarnings("ignore", category=ConvergenceWarning) # avoiding visual pollution
     path_file = 'Android_Malware_Benign.csv'
     dataset = pd.read_csv(path_file)
 	# randomize order of rows with a seed
