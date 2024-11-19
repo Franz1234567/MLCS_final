@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.metrics import f1_score, accuracy_score
 
 def preprocess(dataset, split_test = 0.2):
     dataset_prepprocess = dataset.copy()
@@ -73,6 +74,31 @@ def tune_gradient_des(n_estimator, learn_rate, max_depth):
 	return (df_result)
 # 200 - 0.1 - 3 -> f1_score: 0.9611 and acc: 0.9619
 
+def predict_train():
+
+	print("KNN:")
+	model = KNeighborsClassifier(n_neighbors=6, metric="cosine")
+	model.fit(np.array(X_train_val), np.array(y_train_val))
+	y_pred_train = model.predict(np.array(X_train_val))
+	print("f1 score:", f1_score(y_train_val, y_pred_train, average="macro"))
+	print("accuracy:", accuracy_score(y_train_val, y_pred_train))
+
+	print("\nLogisticRegression:")
+	model = LogisticRegression(C=10, max_iter=50)
+	model.fit(X_train_val, y_train_val)
+	y_pred_train = model.predict(X_train_val)
+	print("f1 score:", f1_score(y_train_val, y_pred_train, average="macro"))
+	print("accuracy:", accuracy_score(y_train_val, y_pred_train))
+
+	print("\nGradient Boosting:")
+	model = GradientBoostingClassifier(n_estimators=200, learning_rate=0.1, max_depth=3, random_state=42)
+	model.fit(X_train_val, y_train_val)
+	y_pred_train = model.predict(X_train_val)
+	print("f1 score:", f1_score(y_train_val, y_pred_train, average="macro"))
+	print("accuracy:", accuracy_score(y_train_val, y_pred_train))
+
+
+
 if __name__=="__main__":
 	path_file = 'Android_Malware_Benign.csv'
 	dataset = pd.read_csv(path_file)
@@ -81,13 +107,13 @@ if __name__=="__main__":
 
 	X_train, X_val, X_test, y_train, y_val, y_test, X_train_val, y_train_val = preprocess(dataset)
 
-	#######################uncomment to test knn parameters
+	####################### uncomment to test knn parameters
 	# df = tune_knn(['minkowski', 'cosine'], list(range(1,10)))
 	# print(df.sort_values(by="f1", ascending=False).head(10))
 	# print(df.sort_values(by="acc", ascending=False).head(10))
 
-	#######################uncomment to test lr parameters
-	#########Part1
+	####################### uncomment to test lr parameters
+	######### Part1
 	#warnings.filterwarnings("ignore", category=ConvergenceWarning) #avoiding visual pollution
 	# list_c = [0.001, 0.01, 0.1, 1, 10, 50, 100, 200, 500, 1000]
 	# list_iter = [50, 100, 150, 200, 250, 300, 500, 1000, 2000, 5000]
@@ -95,7 +121,7 @@ if __name__=="__main__":
 	# print(df.sort_values(by="f1", ascending=False).head(10))
 	# print(df.sort_values(by="acc", ascending=False).head(10))	
 
-	#########Part2: tuning parameters according to previous results
+	######### Part2: tuning parameters according to previous results
 	# warnings.filterwarnings("ignore", category=ConvergenceWarning) #avoiding visual pollution
 	# list_c = [5, 10, 15, 20, 25]
 	# list_iter = [50, 100, 150, 200, 250, 300, 500, 1000]
@@ -103,10 +129,13 @@ if __name__=="__main__":
 	# print(df.sort_values(by="f1", ascending=False).head(10))
 	# print(df.sort_values(by="acc", ascending=False).head(10))
 
-	#######################uncomment to test gradient boosting paramters
+	####################### uncomment to test gradient boosting paramters
 	# n_estimator = [50, 100, 200]
 	# learn_rate = [0.01, 0.05, 0.1, 0.2, 0.3]
 	# max_depth = [3, 4, 5]
 	# df = tune_gradient_des(n_estimator, learn_rate, max_depth)
 	# print(df.sort_values(by="f1", ascending=False).head(10))
 	# print(df.sort_values(by="acc", ascending=False).head(10))
+
+	####################### uncomment to test the parameters found on the train_val set
+	predict_train()
