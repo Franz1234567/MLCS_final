@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import time
 
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.neighbors import KNeighborsClassifier
@@ -11,7 +12,7 @@ from sklearn.svm import SVC
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.metrics import f1_score, accuracy_score
 
-def preprocess(dataset, split_test = 0.2):
+def preprocess(dataset):
     dataset_prepprocess = dataset.copy()
 
     for column in dataset.columns:
@@ -44,8 +45,12 @@ def test(model_name, train_features, train_labels, test_features):
         model = SVC(kernel="rbf", C=10, gamma=0.01)
     if model_name=="gb":
         model = GradientBoostingClassifier(n_estimators=200, learning_rate=0.1, max_depth=3, random_state=42)
-    model.fit(train_features, train_labels)
-    predicted_labels = model.predict(test_features)
+    time_before_fit = time.time()
+    model.fit(np.array(train_features), np.array(train_labels))
+    time_after_fit = time.time()
+    time_taken = time_after_fit - time_before_fit
+    print("Time taken to fit the model: ", time_taken)
+    predicted_labels = model.predict(np.array(test_features))
     return predicted_labels
 
 if __name__=="__main__":
@@ -55,39 +60,39 @@ if __name__=="__main__":
     dataset = dataset.sample(frac=1, random_state=42).reset_index(drop=True)
 
     X_train, X_val, X_test, y_train, y_val, y_test, X_train_val, y_train_val = preprocess(dataset)
-    
+
+    print("KNN:")   
     predict = test("knn", X_train_val, y_train_val, X_test)
-    print("KNN:")
-    print("f1 score:", f1_score(y_test, predict))
-    print("accuracy:", accuracy_score(y_test, predict))
-    
-    predict = test("nb", X_train_val, y_train_val, X_test)
-    print("\nNaive Bayes:")
-    print("f1 score:", f1_score(y_test, predict))
-    print("accuracy:", accuracy_score(y_test, predict))
-    
-    predict = test("lr", X_train_val, y_train_val, X_test)
-    print("\nLogistic Regression:")
-    print("f1 score:", f1_score(y_test, predict))
-    print("accuracy:", accuracy_score(y_test, predict))
-    
-    predict = test("dt", X_train_val, y_train_val, X_test)
-    print("\nDecision Tree:")
-    print("f1 score:", f1_score(y_test, predict))
-    print("accuracy:", accuracy_score(y_test, predict))
-    
-    predict = test("rf", X_train_val, y_train_val, X_test)
-    print("\nRandom Forest:")
-    print("f1 score:", f1_score(y_test, predict))
-    print("accuracy:", accuracy_score(y_test, predict))
-    
-    predict = test("svm", X_train_val, y_train_val, X_test)
-    print("\nSVM:")
     print("f1 score:", f1_score(y_test, predict))
     print("accuracy:", accuracy_score(y_test, predict))
 
-    predict = test("gb", X_train_val, y_train_val, X_test)
+    print("\nNaive Bayes:")  
+    predict = test("nb", X_train_val, y_train_val, X_test)
+    print("f1 score:", f1_score(y_test, predict))
+    print("accuracy:", accuracy_score(y_test, predict))
+    
+    print("\nLogistic Regression:")
+    predict = test("lr", X_train_val, y_train_val, X_test)
+    print("f1 score:", f1_score(y_test, predict))
+    print("accuracy:", accuracy_score(y_test, predict))
+    
+    print("\nDecision Tree:")
+    predict = test("dt", X_train_val, y_train_val, X_test)
+    print("f1 score:", f1_score(y_test, predict))
+    print("accuracy:", accuracy_score(y_test, predict))
+    
+    print("\nRandom Forest:")
+    predict = test("rf", X_train_val, y_train_val, X_test)
+    print("f1 score:", f1_score(y_test, predict))
+    print("accuracy:", accuracy_score(y_test, predict))
+    
+    print("\nSVM:")
+    predict = test("svm", X_train_val, y_train_val, X_test)
+    print("f1 score:", f1_score(y_test, predict))
+    print("accuracy:", accuracy_score(y_test, predict))
+
     print("\nGradient Boosting:")
+    predict = test("gb", X_train_val, y_train_val, X_test)
     print("f1 score:", f1_score(y_test, predict))
     print("accuracy:", accuracy_score(y_test, predict))
     
