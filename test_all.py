@@ -35,7 +35,7 @@ def preprocess(dataset):
     X_train, X_val, y_train, y_val = train_test_split(X_train_val, y_train_val, test_size=0.25, random_state=42)
     return X_train, X_val, X_test, y_train, y_val, y_test, X_train_val, y_train_val
 
-def test(model_name, train_features, train_labels, test_features):
+def test(model_name, train_features, train_labels, test_features, test_overfit=False):
     if model_name=="knn":
         model = KNeighborsClassifier(n_neighbors=6, metric="cosine")
     if model_name=="lr":
@@ -45,7 +45,7 @@ def test(model_name, train_features, train_labels, test_features):
     if model_name=="dt":
         model = DecisionTreeClassifier(criterion="entropy", max_depth=10)
     if model_name=="rf":
-        model = RandomForestClassifier(criterion="gini", max_depth=10, n_estimators=100)
+        model = RandomForestClassifier(criterion="entropy", max_depth=10, n_estimators=200)
     if model_name=="svm":
         model = SVC(kernel="rbf", C=10, gamma=0.01)
     if model_name=="gb":
@@ -56,6 +56,11 @@ def test(model_name, train_features, train_labels, test_features):
     time_taken = time_after_fit - time_before_fit
     print("Time taken to fit the model: ", time_taken)
     predicted_labels = model.predict(np.array(test_features))
+
+    if test_overfit:
+        train_predicted_labels = model.predict(np.array(train_features))
+        print("Train f1 score: ", f1_score(train_labels, train_predicted_labels))
+        print("Train accuracy: ", accuracy_score(train_labels, train_predicted_labels))
     return predicted_labels
 
 def plot_confusion_matrix(y_true, y_pred, model_used):
@@ -81,45 +86,45 @@ if __name__=="__main__":
     X_train, X_val, X_test, y_train, y_val, y_test, X_train_val, y_train_val = preprocess(dataset)
 
     print("KNN:")   
-    predict = test("knn", X_train_val, y_train_val, X_test)
-    print("f1 score:", f1_score(y_test, predict))
-    print("accuracy:", accuracy_score(y_test, predict))
+    predict = test("knn", X_train_val, y_train_val, X_test, test_overfit=True)
+    print("Test f1 score:", f1_score(y_test, predict))
+    print("Test accuracy:", accuracy_score(y_test, predict))
     plot_confusion_matrix(y_test, predict, "KNN")
 
     print("\nNaive Bayes:")  
-    predict = test("nb", X_train_val, y_train_val, X_test)
-    print("f1 score:", f1_score(y_test, predict))
-    print("accuracy:", accuracy_score(y_test, predict))
+    predict = test("nb", X_train_val, y_train_val, X_test, test_overfit=True)
+    print("Test f1 score:", f1_score(y_test, predict))
+    print("Test accuracy:", accuracy_score(y_test, predict))
     plot_confusion_matrix(y_test, predict, "Naive Bayes")
     
     print("\nLogistic Regression:")
-    predict = test("lr", X_train_val, y_train_val, X_test)
-    print("f1 score:", f1_score(y_test, predict))
-    print("accuracy:", accuracy_score(y_test, predict))
+    predict = test("lr", X_train_val, y_train_val, X_test, test_overfit=True)
+    print("Test f1 score:", f1_score(y_test, predict))
+    print("Test accuracy:", accuracy_score(y_test, predict))
     plot_confusion_matrix(y_test, predict, "Logistic Regression")
     
     print("\nDecision Tree:")
-    predict = test("dt", X_train_val, y_train_val, X_test)
-    print("f1 score:", f1_score(y_test, predict))
-    print("accuracy:", accuracy_score(y_test, predict))
+    predict = test("dt", X_train_val, y_train_val, X_test, test_overfit=True)
+    print("Test f1 score:", f1_score(y_test, predict))
+    print("Test accuracy:", accuracy_score(y_test, predict))
     plot_confusion_matrix(y_test, predict, "Decision Tree")
     
     print("\nRandom Forest:")
-    predict = test("rf", X_train_val, y_train_val, X_test)
-    print("f1 score:", f1_score(y_test, predict))
-    print("accuracy:", accuracy_score(y_test, predict))
+    predict = test("rf", X_train_val, y_train_val, X_test, test_overfit=True)
+    print("Test f1 score:", f1_score(y_test, predict))
+    print("Test accuracy:", accuracy_score(y_test, predict))
     plot_confusion_matrix(y_test, predict, "Random Forest")
     
     print("\nSVM:")
-    predict = test("svm", X_train_val, y_train_val, X_test)
-    print("f1 score:", f1_score(y_test, predict))
-    print("accuracy:", accuracy_score(y_test, predict))
+    predict = test("svm", X_train_val, y_train_val, X_test, test_overfit=True)
+    print("Test f1 score:", f1_score(y_test, predict))
+    print("Test accuracy:", accuracy_score(y_test, predict))
     plot_confusion_matrix(y_test, predict, "SVM")
 
     print("\nGradient Boosting:")
-    predict = test("gb", X_train_val, y_train_val, X_test)
-    print("f1 score:", f1_score(y_test, predict))
-    print("accuracy:", accuracy_score(y_test, predict))
+    predict = test("gb", X_train_val, y_train_val, X_test, test_overfit=True)
+    print("Test f1 score:", f1_score(y_test, predict))
+    print("Test accuracy:", accuracy_score(y_test, predict))
     plot_confusion_matrix(y_test, predict, "Gradient Boosting")
     
     

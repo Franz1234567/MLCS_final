@@ -9,6 +9,7 @@ from sklearn.metrics import accuracy_score, confusion_matrix, classification_rep
 from sklearn import naive_bayes, neighbors
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC
+from sklearn.neural_network import MLPClassifier
 
 def preprocess(dataset):
     dataset_prepprocess = dataset.copy()
@@ -136,7 +137,6 @@ def test_model_svm():
     print(svm_results_df.sort_values(by='mean_accuracy', ascending=False).head(10))
 
 
-
 if __name__ == '__main__':
     path_file = 'Android_Malware_Benign.csv'
     dataset = pd.read_csv(path_file)
@@ -144,6 +144,6 @@ if __name__ == '__main__':
     X_train, X_val, X_test, y_train, y_val, y_test, X_train_val, y_train_val = preprocess(dataset)
 
     # test_model_NB()
-    test_model_RF()
+    # test_model_RF()
     # test_model_dt()
     # test_model_svm()
