@@ -8,7 +8,7 @@ python3 test_all_models.py
 ```
 
 ## Tuning the parameters
-In `\tune_parameters` choose the right file and uncomment the model you want to tune
+In `\tune_parameters`, choose the right file and uncomment the model you want to tune
 
 ## Image results
 In `\Images`, you can find:
