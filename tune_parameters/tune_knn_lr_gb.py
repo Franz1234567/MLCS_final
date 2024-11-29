@@ -58,7 +58,7 @@ def tune_logistic(list_c, list_max_iter):
 	return (df_result)
 # 10, 50 -> f1_score: 0.9608 and acc:0.9616
 
-def tune_gradient_des(n_estimator, learn_rate, max_depth):
+def tune_gradient_boost(n_estimator, learn_rate, max_depth):
 	list_result = []
 	for est in n_estimator:
 		for rate in learn_rate:
@@ -133,7 +133,7 @@ if __name__=="__main__":
 	# n_estimator = [50, 100, 200]
 	# learn_rate = [0.01, 0.05, 0.1, 0.2, 0.3]
 	# max_depth = [3, 4, 5]
-	# df = tune_gradient_des(n_estimator, learn_rate, max_depth)
+	# df = tune_gradient_boost(n_estimator, learn_rate, max_depth)
 	# print(df.sort_values(by="f1", ascending=False).head(10))
 	# print(df.sort_values(by="acc", ascending=False).head(10))
 
